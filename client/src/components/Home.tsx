@@ -22,14 +22,17 @@ export function Home() {
     setChatData(updatedChatData);
 
     try {
-      const response = await fetch(`http://127.0.0.1:3000/chat`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ messages: updatedChatData }),
-      });
+      const response = await fetch(
+        `https://chat-bot-server-fawn.vercel.app/api/chat`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ messages: updatedChatData }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
