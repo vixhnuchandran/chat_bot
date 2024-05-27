@@ -31,15 +31,15 @@ function chat(req, res) {
         try {
             const result = yield (0, ai_1.streamText)({
                 model: (0, openai_1.openai)("gpt-4-turbo"),
-                system: `You are a helpful, respectful and honest assistant.`,
+                system: `You are a helpful, respectful, and honest assistant.`,
                 messages,
             });
-            const data = new ai_1.StreamData();
             res.writeHead(200, {
                 "Content-Type": "text/plain; charset=utf-8",
                 "Transfer-Encoding": "chunked",
                 "Cache-Control": "no-cache",
             });
+            res.write(" ");
             let fullResponse = "";
             try {
                 for (var _d = true, _e = __asyncValues(result.textStream), _f; _f = yield _e.next(), _a = _f.done, !_a; _d = true) {
@@ -67,3 +67,18 @@ function chat(req, res) {
     });
 }
 exports.chat = chat;
+// async (req: Request, res: Response)=> {
+//   try {
+//     const { messages } = req.body
+//     const response = await openai.chat.completions.create({
+//       model: "gpt-3.5-turbo",
+//       stream: true,
+//       messages,
+//     })
+//     const stream = OpenAIStream(response)
+//     const streamingResponse = new StreamingTextResponse(stream)
+//     streamingResponse.pipe(res)
+//   } catch (error: any) {
+//     res.status(500).json({ error: error.message })
+//   }
+// })
