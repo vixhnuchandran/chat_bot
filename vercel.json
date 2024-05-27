@@ -7,11 +7,8 @@
       "config": { "includeFiles": ["/server/dist/**"] }
     }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
-  "routes": [
-    {
-      "src": "/server/(.*)",
-      "dest": "/server/dist/index.js"
-    }
+  "rewrites": [
+    { "source": "/server/(.*)", "destination": "/server/" },
+    { "source": "/client/(.*)", "destination": "/client/" }
   ]
 }
