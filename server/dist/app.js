@@ -17,5 +17,5 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
     res.send("Server is listening.");
 });
-app.use("/", routes_1.default);
+app.use("/api", routes_1.default);
 exports.default = app;

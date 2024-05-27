@@ -15,6 +15,6 @@ app.use((req: Request, res: Response, next) => {
 app.get("/", (req: Request, res: Response) => {
   res.send("Server is listening.")
 })
-app.use("/", router)
+app.use("/api", router)
 
 export default app
