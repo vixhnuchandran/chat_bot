@@ -42,28 +42,35 @@ export function Home() {
 
       const decoder = new TextDecoder();
       let accumulatedData = "";
-      let chunk = await reader.read();
-      while (!chunk.done) {
-        const chunkData = decoder.decode(chunk.value);
-        accumulatedData += chunkData;
 
-        const aiPayload: Payload = {
-          role: "assistant",
-          content: accumulatedData,
-        };
+      let done = false;
+      while (!done) {
+        const { value, done: chunkDone } = await reader.read();
+        done = chunkDone;
 
-        setChatData((prevChatData) => {
-          const lastMessage = prevChatData[prevChatData.length - 1];
-          if (lastMessage?.role === "assistant") {
-            // Update the last message if it's from the assistant
-            return [...prevChatData.slice(0, -1), aiPayload];
-          } else {
-            // Add a new message if the last message is from the user
-            return [...prevChatData, aiPayload];
-          }
-        });
-        chunk = await reader.read();
+        if (value) {
+          const chunkData = decoder.decode(value);
+          accumulatedData += chunkData;
+
+          const aiPayload: Payload = {
+            role: "assistant",
+            content: accumulatedData,
+          };
+
+          setChatData((prevChatData) => {
+            const lastMessage = prevChatData[prevChatData.length - 1];
+            if (lastMessage?.role === "assistant") {
+              const newChatData = [...prevChatData];
+              newChatData[newChatData.length - 1] = aiPayload;
+              return newChatData;
+            } else {
+              return [...prevChatData, aiPayload];
+            }
+          });
+        }
       }
+
+      accumulatedData = "";
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -86,24 +93,26 @@ export function Home() {
             <div className="flex-1">
               {chatData && (
                 <ScrollArea className="h-full">
-                  <div className="relative items-center px-6 space-y-4 text-sm">
+                  <div className="relative items-start px-6 space-y-4 text-sm">
                     {chatData.map((data, index) => (
-                      <div key={index} className="flex space-x-3">
+                      <div key={index} className="flex items-start">
                         <span>
                           {data.role === "user" ? (
                             <Avatar>
                               <AvatarImage
                                 src="https://github.com/shadcn.png"
                                 alt="@shadcn"
-                                className="absolute w-8 h-8"
+                                className="rounded-full w-8 h-8"
                               />
                               <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                           ) : (
-                            <Bot className="absolute w-8 h-8" />
+                            <Bot className="border p-1 mr-2 rounded-full w-8 h-8" />
                           )}
                         </span>
-                        <span className="px-10 mt-1">{data.content}</span>
+                        <span className="pl-3 text-base text-left whitespace-pre-wrap">
+                          {data.content}
+                        </span>
                       </div>
                     ))}
                     <div ref={scrollAreaRef}></div>
