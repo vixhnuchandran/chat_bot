@@ -11,6 +11,9 @@ interface Payload {
   content: string;
 }
 
+// const API = "http://localhost:3001/api/chat";
+const API2 = "http://18.234.113.178:3000/api/chat";
+
 export function Home() {
   const [chatData, setChatData] = useState<Payload[]>([]);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -22,17 +25,14 @@ export function Home() {
     setChatData(updatedChatData);
 
     try {
-      const response = await fetch(
-        `https://chat-bot-server-fawn.vercel.app/api/chat`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ messages: updatedChatData }),
-        }
-      );
+      const response = await fetch(API2, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages: updatedChatData }),
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -131,7 +131,7 @@ export function Home() {
                 handleChatConversationWithAI(message);
                 e.currentTarget.reset();
               }}
-              className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
+              className="relative h-[100px] overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
             >
               <Label htmlFor="message" className="sr-only">
                 Message
